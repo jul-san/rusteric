@@ -3,26 +3,26 @@ mod operations;
 
 use std::io::{self};
 use matrix::Matrix;
-use operations::{row_ops, echelon};
+use operations::{row_ops, echelon, arithmetic};
 
 fn main() {
-    let mut m = Matrix::new(vec![
+    let mut m1 = Matrix::new(vec![
         vec![1.0, 2.0, 3.0], 
         vec![2.0, 4.0, 6.0],
         vec![1.0, 1.0, 1.0]]);
 
-    print_section("Printing Matrix");
-    m.print_matrix();
+    let mut m2 = Matrix::new(vec![
+        vec![1.0, 2.0],
+        vec![3.0, 4.0]]);
 
-    /*
-    print_section("Swapping Rows 0 and 2");
-    row_ops::swap_row(&mut m, 0, 2);
-    m.print_matrix();
-    */ 
+    print_section("Printing M1");
+    m1.print_matrix();
 
-    print_section("Echelon Form");
-    echelon::row_echelon(&mut m);
-    m.print_matrix();
+    print_section("Printing M2");
+    m2.print_matrix();
+
+    print_section("Trying Addition");
+    arithmetic::add(&mut m1, &mut m2);
 }
 
 fn print_section(title: &str) {
