@@ -52,6 +52,39 @@ fn eliminate_below(data: &mut [f64],
   }
 }
 
+fn eliminate_above(data: &mut [f64],
+    col_count: usize,
+    pivot_row: usize,
+    pivot_col: usize){
+
+  for row in 0..pivot_row {
+    let factor = data[row * col_count + pivot_col];
+    for col in pivot_col..col_count {
+      data[row * col_count + col] -= factor * data[pivot_row * col_count + col];
+    }
+  }
+}
+
+pub fn reduced_row_echelon(matrix: &mut Matrix) {
+  row_echelon(matrix);
+
+  let row_count = matrix.get_rows();
+  let col_count = matrix.get_cols();
+  let data = matrix.mut_matrix();
+
+  let mut pivot_col = 0;
+  for pivot_row in 0..row_count {
+    while pivot_col < col_count && data[pivot_row * col_count + pivot_col] == 0.0 {
+      pivot_col += 1;
+    }
+    if pivot_col >= col_count {
+      break;
+    }
+    eliminate_above(data, col_count, pivot_row, pivot_col);
+    pivot_col += 1;
+  }
+}
+
 pub fn row_echelon(matrix: &mut Matrix) {
   let row_count = matrix.get_rows();
   let col_count = matrix.get_cols();
@@ -64,13 +97,11 @@ pub fn row_echelon(matrix: &mut Matrix) {
       break;
     }
 
-    let result = find_pivot_row(data, 
+    let Some(max_row) = find_pivot_row(data, 
         col_count, 
         pivot_row, 
-        row_count,
-        pivot_col);
-
-    let Some(max_row) = find_pivot_row(data, col_count, pivot_row, row_count, pivot_col)
+        row_count, 
+        pivot_col)
     else{
         continue;
     };
@@ -96,4 +127,3 @@ pub fn row_echelon(matrix: &mut Matrix) {
     pivot_row += 1;
   }
 }
-
