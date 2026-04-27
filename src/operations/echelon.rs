@@ -21,9 +21,9 @@ fn swap_rows(data: &mut [f64],
     row_b: usize){
 
     for col in 0..col_count{
-        let index_a = row_a*col_count + col;
-        let index_b = row_b*col_count + col;
-        data.swap(index_a, index_b);
+        let idx_a = row_a*col_count + col;
+        let idx_b = row_b*col_count + col;
+        data.swap(idx_a, idx_b);
     }
 }
 
