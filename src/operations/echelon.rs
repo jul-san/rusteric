@@ -1,129 +1,75 @@
 use crate::matrix::Matrix;
+use crate::operations::row_ops::{swap_rows, scale_row, add_scaled_row};
 
 fn find_pivot_row(
-    data: &[f64], 
-    col_count: usize, 
-    from_row: usize, 
-    row_count: usize, 
-    col: usize) -> Option<usize>{
+    data: &[f64],
+    col_count: usize,
+    from_row: usize,
+    row_count: usize,
+    col: usize) -> Option<usize> {
 
-    for row in from_row..row_count{
-        if data[row*col_count + col] != 0.0{
+    for row in from_row..row_count {
+        if data[row * col_count + col] != 0.0 {
             return Some(row);
         }
     }
     None
 }
 
-fn swap_rows(data: &mut [f64], 
-    col_count: usize, 
-    row_a: usize, 
-    row_b: usize){
+pub fn row_echelon(matrix: &mut Matrix) {
+    let row_count = matrix.get_rows();
+    let col_count = matrix.get_cols();
+    let data = matrix.mut_matrix();
 
-    for col in 0..col_count{
-        let idx_a = row_a*col_count + col;
-        let idx_b = row_b*col_count + col;
-        data.swap(idx_a, idx_b);
+    let mut pivot_row = 0;
+
+    for pivot_col in 0..col_count {
+        if pivot_row >= row_count {
+            break;
+        }
+
+        let Some(found_row) = find_pivot_row(data, col_count, pivot_row, row_count, pivot_col)
+        else {
+            continue;
+        };
+
+        if found_row != pivot_row {
+            swap_rows(data, col_count, pivot_row, found_row);
+        }
+
+        let pivot_val = data[pivot_row * col_count + pivot_col];
+        scale_row(data, col_count, pivot_row, 1.0 / pivot_val);
+
+        for row in (pivot_row + 1)..row_count {
+            let factor = data[row * col_count + pivot_col];
+            add_scaled_row(data, col_count, row, pivot_row, -factor);
+        }
+
+        pivot_row += 1;
     }
-}
-
-fn normalize_row(data: &mut [f64], 
-    col_count: usize, 
-    row: usize, 
-    from_col: usize){
-
-  let pivot = data[row * col_count + from_col];
-  for col in from_col..col_count {
-    data[row * col_count + col] /= pivot;
-  }
-}
-
-fn eliminate_below(data: &mut [f64], 
-    col_count: usize, 
-    pivot_row: usize, 
-    row_count: usize, 
-    pivot_col: usize){
-
-  for row in (pivot_row + 1)..row_count {
-    let factor = data[row * col_count + pivot_col];
-    for col in pivot_col..col_count {
-      data[row * col_count + col] -= factor * data[pivot_row * col_count + col];
-    }
-  }
-}
-
-fn eliminate_above(data: &mut [f64],
-    col_count: usize,
-    pivot_row: usize,
-    pivot_col: usize){
-
-  for row in 0..pivot_row {
-    let factor = data[row * col_count + pivot_col];
-    for col in pivot_col..col_count {
-      data[row * col_count + col] -= factor * data[pivot_row * col_count + col];
-    }
-  }
 }
 
 pub fn reduced_row_echelon(matrix: &mut Matrix) {
-  row_echelon(matrix);
+    row_echelon(matrix);
 
-  let row_count = matrix.get_rows();
-  let col_count = matrix.get_cols();
-  let data = matrix.mut_matrix();
+    let row_count = matrix.get_rows();
+    let col_count = matrix.get_cols();
+    let data = matrix.mut_matrix();
 
-  let mut pivot_col = 0;
-  for pivot_row in 0..row_count {
-    while pivot_col < col_count && data[pivot_row * col_count + pivot_col] == 0.0 {
-      pivot_col += 1;
+    let mut pivot_col = 0;
+    for pivot_row in 0..row_count {
+        while pivot_col < col_count && data[pivot_row * col_count + pivot_col] == 0.0 {
+            pivot_col += 1;
+        }
+        if pivot_col >= col_count {
+            break;
+        }
+
+        for row in 0..pivot_row {
+            let factor = data[row * col_count + pivot_col];
+            add_scaled_row(data, col_count, row, pivot_row, -factor);
+        }
+
+        pivot_col += 1;
     }
-    if pivot_col >= col_count {
-      break;
-    }
-    eliminate_above(data, col_count, pivot_row, pivot_col);
-    pivot_col += 1;
-  }
-}
-
-pub fn row_echelon(matrix: &mut Matrix) {
-  let row_count = matrix.get_rows();
-  let col_count = matrix.get_cols();
-  let data = matrix.mut_matrix();
-
-  let mut pivot_row = 0;
-
-  for pivot_col in 0..col_count {
-    if pivot_row >= row_count {
-      break;
-    }
-
-    let Some(max_row) = find_pivot_row(data, 
-        col_count, 
-        pivot_row, 
-        row_count, 
-        pivot_col)
-    else{
-        continue;
-    };
-
-    if max_row != pivot_row {
-      swap_rows(data, 
-          col_count, 
-          pivot_row, 
-          max_row);
-    }
-
-    normalize_row(data, 
-        col_count, 
-        pivot_row, 
-        pivot_col);
-
-    eliminate_below(data, 
-        col_count, 
-        pivot_row, 
-        row_count, 
-        pivot_col);
-
-    pivot_row += 1;
-  }
 }
