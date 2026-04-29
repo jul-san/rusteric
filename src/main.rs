@@ -4,9 +4,11 @@ mod operations;
 use matrix::Matrix;
 use operations::echelon::{row_echelon, reduced_row_echelon};
 use operations::arithmetic::{add, subtract, multiply};
+use operations::determinant::determinant;
+use operations::inverse::inverse;
 
 fn main() {
-    let mut m1 = Matrix::new(3, 3, vec![ 1.0, 2.0, 3.0, 2.0, 4.0, 6.0, 1.0, 1.0, 1.0]);
+    let m1 = Matrix::new(3, 3, vec![ 1.0, 2.0, 3.0, 2.0, 4.0, 6.0, 1.0, 1.0, 1.0]);
     let mut m2 = Matrix::new(2, 2, vec![1.0, 2.0, 3.0, 4.0]);
 
     print_section("Printing M1");
@@ -76,6 +78,19 @@ fn main() {
     d.print_matrix();
     println!("Result (2x2):");
     multiply(&c, &d).unwrap().print_matrix();
+
+    let e = Matrix::new(3, 3, vec![1.0, 2.0, 3.0, 0.0, 1.0, 4.0, 5.0, 6.0, 0.0]);
+
+    print_section("Determinant of E");
+    println!("E:");
+    e.print_matrix();
+    println!("det(E) = {}", determinant(&e).unwrap());
+
+    print_section("Inverse of E");
+    println!("E:");
+    e.print_matrix();
+    println!("E^-1:");
+    inverse(&e).unwrap().print_matrix();
 }
 
 fn print_section(title: &str) {
