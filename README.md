@@ -1,5 +1,6 @@
 <div align="center">
   <img src="rusteric.png" alt="linear rustgebra banner" width="600"/>
+  <p><em>shoutout to "image generator" by naif alotaibi on DALL·E for generating this image 🙏</em></p>
 </div>
 
 # Rusteric
