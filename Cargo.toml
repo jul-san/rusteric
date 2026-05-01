@@ -5,3 +5,15 @@ edition = "2024"
 
 [dependencies]
 rayon = "1.10"
+
+[[test]]
+name = "addition_tests"
+path = "tests/arithmetic/addition_tests.rs"
+
+[[test]]
+name = "subtraction_tests"
+path = "tests/arithmetic/subtraction_tests.rs"
+
+[[test]]
+name = "multiplication_tests"
+path = "tests/arithmetic/multiplication_tests.rs"
