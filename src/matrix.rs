@@ -37,4 +37,12 @@ impl Matrix{
     pub fn get_cols(&self) -> usize {
         return self.cols;
     }
+
+    pub fn identity(n: usize) -> Matrix {
+        let mut data = vec![0.0_f64; n * n];
+        for i in 0..n {
+            data[i * n + i] = 1.0;
+        }
+        Matrix::new(n, n, data)
+    }
 }
