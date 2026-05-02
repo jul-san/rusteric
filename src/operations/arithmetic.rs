@@ -39,6 +39,16 @@ pub fn subtract(m1: &Matrix, m2: &Matrix) -> Result<Matrix, String>{
     Ok(Matrix::new(m1.get_rows(), m1.get_cols(), data))
 }
 
+pub fn scalar_multiply(m: &Matrix, scalar: f64) -> Matrix {
+    let data: Vec<f64> = m.read_matrix().iter().map(|x| x * scalar).collect();
+    Matrix::new(m.get_rows(), m.get_cols(), data)
+}
+
+pub fn scalar_add(m: &Matrix, scalar: f64) -> Matrix {
+    let data: Vec<f64> = m.read_matrix().iter().map(|x| x + scalar).collect();
+    Matrix::new(m.get_rows(), m.get_cols(), data)
+}
+
 pub fn multiply(m1: &Matrix, m2: &Matrix) -> Result<Matrix, String>{
     // the number of columns in m1 have to equal the number of rows in m2
     if m1.get_cols() != m2.get_rows(){
