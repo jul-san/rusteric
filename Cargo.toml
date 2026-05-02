@@ -17,3 +17,7 @@ path = "tests/arithmetic/subtraction_tests.rs"
 [[test]]
 name = "multiplication_tests"
 path = "tests/arithmetic/multiplication_tests.rs"
+
+[[test]]
+name = "scalar_tests"
+path = "tests/arithmetic/scalar_tests.rs"
